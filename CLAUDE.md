@@ -19,12 +19,11 @@ Calendario familiar para organizar turnos de cuidado. Cada día se divide en 3 b
 - **React 19** + **TypeScript 6** + **Vite 8**
 - **Tailwind CSS** — utility-first; no usar CSS modules ni estilos en línea salvo casos muy puntuales
 - **React Compiler** activado vía `babel-plugin-react-compiler` — no usar `useMemo` / `useCallback` manualmente; el compilador los infiere
-- App en `papa/src/`
+- App en `src/` (raíz del repo)
 
 ## Comandos habituales
 
 ```bash
-cd papa
 npm run dev      # servidor de desarrollo (HMR)
 npm run build    # compilar para producción (tsc + vite build)
 npm run lint     # ESLint
@@ -34,11 +33,18 @@ npm run preview  # previsualizar el build
 ## Estructura
 
 ```
-papa/
-  src/
-    App.tsx       # componente raíz
-    main.tsx      # punto de entrada
-    assets/       # imágenes y SVGs estáticos
+src/
+  App.tsx              # componente raíz
+  main.tsx             # punto de entrada
+  types.ts             # tipos y constantes del dominio
+  assets/              # imágenes y SVGs estáticos
+  components/
+    Calendar.tsx       # grid mensual + navegación
+    DayCell.tsx        # celda de día con popover por bloque
+  hooks/
+    useTurnos.ts       # fetch + toggle optimista contra Supabase
+  lib/
+    supabase.ts        # cliente Supabase
 ```
 
 ## Convenciones
