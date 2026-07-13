@@ -69,7 +69,7 @@ export function DayCell({ day, fecha, isToday, turnos, onToggle }: Props) {
                   isOpen
                     ? 'bg-gray-100'
                     : bloqueCubierto(bloque)
-                      ? 'bg-[#cbf9db] hover:bg-green-200'
+                      ? 'bg-green-200 hover:bg-green-300'
                       : 'hover:bg-gray-50 active:bg-gray-100'
                 }`}
               >
