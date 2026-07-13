@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { Calendar } from './components/Calendar'
 import { useTurnos } from './hooks/useTurnos'
+import { useNotas } from './hooks/useNotas'
 
 export default function App() {
   const today = new Date()
   const [year, setYear] = useState(today.getFullYear())
   const [month, setMonth] = useState(today.getMonth() + 1)
   const { turnos, loading, error, toggle } = useTurnos(year, month)
+  const { notas, saveNota } = useNotas(year, month)
 
   const goToPrev = () => {
     if (month === 1) { setYear(y => y - 1); setMonth(12) }
@@ -29,10 +31,12 @@ export default function App() {
         year={year}
         month={month}
         turnos={turnos}
+        notas={notas}
         loading={loading}
         onPrev={goToPrev}
         onNext={goToNext}
         onToggle={toggle}
+        onSaveNota={saveNota}
       />
     </>
   )

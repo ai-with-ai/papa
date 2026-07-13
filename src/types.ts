@@ -57,3 +57,10 @@ export const MESES = [
 ]
 
 export const DIAS_SEMANA = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
+
+export interface Nota {
+  id: string
+  fecha: string
+  bloque: Bloque
+  nota: string
+}

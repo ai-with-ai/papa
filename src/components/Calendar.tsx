@@ -1,15 +1,17 @@
 import { useRef, useEffect, useState } from 'react'
 import { DayCell } from './DayCell'
-import { DIAS_SEMANA, MESES, type Turno, type Bloque, type Persona } from '../types'
+import { DIAS_SEMANA, MESES, type Turno, type Nota, type Bloque, type Persona } from '../types'
 
 interface Props {
   year: number
   month: number
   turnos: Turno[]
+  notas: Nota[]
   loading: boolean
   onPrev: () => void
   onNext: () => void
   onToggle: (fecha: string, bloque: Bloque, persona: Persona) => void
+  onSaveNota: (fecha: string, bloque: Bloque, texto: string) => void
 }
 
 const PERSONAS_LEGEND = [
@@ -19,7 +21,7 @@ const PERSONAS_LEGEND = [
   { label: 'Carlos', color: 'bg-amber-400',   initial: 'Ca' },
 ]
 
-export function Calendar({ year, month, turnos, loading, onPrev, onNext, onToggle }: Props) {
+export function Calendar({ year, month, turnos, notas, loading, onPrev, onNext, onToggle, onSaveNota }: Props) {
   const headerRef  = useRef<HTMLDivElement>(null)
   const daysRef    = useRef<HTMLDivElement>(null)
   const bodyRef    = useRef<HTMLDivElement>(null)
@@ -57,6 +59,9 @@ export function Calendar({ year, month, turnos, loading, onPrev, onNext, onToggl
 
   const turnosForDay = (day: number) =>
     turnos.filter(t => t.fecha === toFecha(day))
+
+  const notasForDay = (day: number) =>
+    notas.filter(n => n.fecha === toFecha(day))
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -142,7 +147,9 @@ export function Calendar({ year, month, turnos, loading, onPrev, onNext, onToggl
                   fecha={toFecha(day)}
                   isToday={isToday(day)}
                   turnos={turnosForDay(day)}
+                  notas={notasForDay(day)}
                   onToggle={onToggle}
+                  onSaveNota={onSaveNota}
                 />
               ),
             )}
