@@ -1,5 +1,7 @@
 import { useRef, useEffect, useState } from 'react'
 import { DayCell } from './DayCell'
+import { NotasPanel } from './NotasPanel'
+import { useSeenNotas } from '../hooks/useSeenNotas'
 import { DIAS_SEMANA, MESES, type Turno, type Nota, type Bloque, type Persona } from '../types'
 
 interface Props {
@@ -26,6 +28,13 @@ export function Calendar({ year, month, turnos, notas, loading, onPrev, onNext, 
   const daysRef    = useRef<HTMLDivElement>(null)
   const bodyRef    = useRef<HTMLDivElement>(null)
   const [headerH, setHeaderH] = useState(0)
+  const [panelOpen, setPanelOpen] = useState(false)
+  const { hasUnread, markAllSeen } = useSeenNotas(notas)
+
+  const openPanel = () => {
+    setPanelOpen(true)
+    markAllSeen()
+  }
 
   // Mide la altura del header principal para posicionar la fila de días
   useEffect(() => {
@@ -64,6 +73,7 @@ export function Calendar({ year, month, turnos, notas, loading, onPrev, onNext, 
     notas.filter(n => n.fecha === toFecha(day))
 
   return (
+    <>
     <div className="min-h-screen bg-gray-50">
 
       {/* ── Header principal (sticky) ── */}
@@ -74,14 +84,14 @@ export function Calendar({ year, month, turnos, notas, loading, onPrev, onNext, 
         <div className="px-4 pt-3 pb-2">
 
           {/* Navegación de mes */}
-          <div className="flex items-center justify-between mb-2">
+          <div className="grid grid-cols-3 items-center mb-2">
             <button
               onClick={onPrev}
-              className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 text-xl leading-none transition-colors"
+              className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 text-xl leading-none transition-colors justify-self-start"
             >
               ‹
             </button>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col items-center">
               <h1 className="text-xl font-semibold text-gray-800">
                 {MESES[month - 1]} {year}
               </h1>
@@ -89,12 +99,30 @@ export function Calendar({ year, month, turnos, notas, loading, onPrev, onNext, 
                 <span className="text-xs text-gray-400 animate-pulse">actualizando…</span>
               )}
             </div>
-            <button
-              onClick={onNext}
-              className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 text-xl leading-none transition-colors"
-            >
-              ›
-            </button>
+            <div className="flex items-center justify-end gap-1">
+              {/* Icono de notas global */}
+              <button
+                onClick={openPanel}
+                className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                aria-label="Ver todas las notas"
+              >
+                <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-gray-500">
+                  <rect x="3" y="1" width="14" height="18" rx="2" />
+                  <rect x="5.5" y="5" width="9" height="1.5" rx="0.75" fill="white" />
+                  <rect x="5.5" y="9" width="9" height="1.5" rx="0.75" fill="white" />
+                  <rect x="5.5" y="13" width="5" height="1.5" rx="0.75" fill="white" />
+                </svg>
+                {hasUnread && (
+                  <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
+                )}
+              </button>
+              <button
+                onClick={onNext}
+                className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 text-xl leading-none transition-colors"
+              >
+                ›
+              </button>
+            </div>
           </div>
 
           {/* Leyenda personas */}
@@ -158,5 +186,10 @@ export function Calendar({ year, month, turnos, notas, loading, onPrev, onNext, 
       </div>
 
     </div>
+
+    {panelOpen && (
+      <NotasPanel notas={notas} onClose={() => setPanelOpen(false)} />
+    )}
+    </>
   )
 }
