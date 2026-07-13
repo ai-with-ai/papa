@@ -34,13 +34,18 @@ export function DayCell({ day, fecha, isToday, turnos, onToggle }: Props) {
   const isAssigned = (bloque: Bloque, persona: Persona) =>
     turnos.some(t => t.bloque === bloque && t.persona === persona)
 
+  const bloqueCubierto = (bloque: Bloque) => personasOf(bloque).length > 0
+  const diaCubierto = BLOQUES.every(bloqueCubierto)
+
   return (
     <div
       ref={ref}
-      className={`relative rounded-lg border p-2 min-h-[120px] ${
+      className={`relative rounded-lg border p-2 min-h-[120px] transition-colors ${
         isToday
           ? 'border-blue-400 bg-blue-50'
-          : 'border-gray-200 bg-white hover:border-gray-300'
+          : diaCubierto
+            ? 'border-green-300 bg-green-100'
+            : 'border-gray-200 bg-white hover:border-gray-300'
       }`}
     >
       {/* Número del día */}
@@ -61,7 +66,11 @@ export function DayCell({ day, fecha, isToday, turnos, onToggle }: Props) {
               <button
                 onClick={() => setOpenBloque(isOpen ? null : bloque)}
                 className={`w-full text-left rounded-md px-1.5 py-1 flex items-center gap-1.5 transition-colors min-h-[32px] ${
-                  isOpen ? 'bg-gray-100' : 'hover:bg-gray-50 active:bg-gray-100'
+                  isOpen
+                    ? 'bg-gray-100'
+                    : bloqueCubierto(bloque)
+                      ? 'bg-green-50 hover:bg-green-100'
+                      : 'hover:bg-gray-50 active:bg-gray-100'
                 }`}
               >
                 <span className="text-sm leading-none shrink-0">{BLOQUE_ICON[bloque]}</span>
