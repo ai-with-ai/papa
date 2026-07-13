@@ -44,7 +44,7 @@ export function DayCell({ day, fecha, isToday, turnos, onToggle }: Props) {
         isToday
           ? 'border-blue-400 bg-blue-50'
           : diaCubierto
-            ? 'border-green-300 bg-green-100'
+            ? 'border-green-200 bg-green-100'
             : 'border-gray-200 bg-white hover:border-gray-300'
       }`}
     >
@@ -69,7 +69,7 @@ export function DayCell({ day, fecha, isToday, turnos, onToggle }: Props) {
                   isOpen
                     ? 'bg-gray-100'
                     : bloqueCubierto(bloque)
-                      ? 'bg-green-50 hover:bg-green-100'
+                      ? 'bg-green-300 hover:bg-green-400'
                       : 'hover:bg-gray-50 active:bg-gray-100'
                 }`}
               >
