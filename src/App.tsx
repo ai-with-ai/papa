@@ -6,7 +6,7 @@ export default function App() {
   const today = new Date()
   const [year, setYear] = useState(today.getFullYear())
   const [month, setMonth] = useState(today.getMonth() + 1)
-  const { turnos, loading, toggle } = useTurnos(year, month)
+  const { turnos, loading, error, toggle } = useTurnos(year, month)
 
   const goToPrev = () => {
     if (month === 1) { setYear(y => y - 1); setMonth(12) }
@@ -19,14 +19,21 @@ export default function App() {
   }
 
   return (
-    <Calendar
-      year={year}
-      month={month}
-      turnos={turnos}
-      loading={loading}
-      onPrev={goToPrev}
-      onNext={goToNext}
-      onToggle={toggle}
-    />
+    <>
+      {error && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-red-500 text-white text-sm px-4 py-2 rounded-xl shadow-lg">
+          {error}
+        </div>
+      )}
+      <Calendar
+        year={year}
+        month={month}
+        turnos={turnos}
+        loading={loading}
+        onPrev={goToPrev}
+        onNext={goToNext}
+        onToggle={toggle}
+      />
+    </>
   )
 }
