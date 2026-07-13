@@ -78,31 +78,38 @@ export function Calendar({ year, month, turnos, loading, onPrev, onNext, onToggl
           ))}
         </div>
 
-        {/* Cabecera días semana */}
-        <div className="grid grid-cols-7 gap-1 mb-1">
-          {DIAS_SEMANA.map(d => (
-            <div key={d} className="text-center text-xs font-medium text-gray-400 py-1">
-              {d}
-            </div>
-          ))}
-        </div>
+        {/* Scroll horizontal — cabecera + grid van juntos */}
+        <div className="overflow-x-auto -mx-4 px-4">
+          <div className="min-w-[700px]">
 
-        {/* Grid calendario */}
-        <div className="grid grid-cols-7 gap-1">
-          {cells.map((day, i) =>
-            day == null ? (
-              <div key={`empty-${i}`} />
-            ) : (
-              <DayCell
-                key={day}
-                day={day}
-                fecha={toFecha(day)}
-                isToday={isToday(day)}
-                turnos={turnosForDay(day)}
-                onToggle={onToggle}
-              />
-            ),
-          )}
+            {/* Cabecera días semana */}
+            <div className="grid grid-cols-7 gap-1 mb-1">
+              {DIAS_SEMANA.map(d => (
+                <div key={d} className="text-center text-xs font-medium text-gray-400 py-1">
+                  {d}
+                </div>
+              ))}
+            </div>
+
+            {/* Grid calendario */}
+            <div className="grid grid-cols-7 gap-1">
+              {cells.map((day, i) =>
+                day == null ? (
+                  <div key={`empty-${i}`} />
+                ) : (
+                  <DayCell
+                    key={day}
+                    day={day}
+                    fecha={toFecha(day)}
+                    isToday={isToday(day)}
+                    turnos={turnosForDay(day)}
+                    onToggle={onToggle}
+                  />
+                ),
+              )}
+            </div>
+
+          </div>
         </div>
       </div>
     </div>
