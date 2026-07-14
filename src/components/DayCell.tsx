@@ -42,6 +42,9 @@ export function DayCell({ day, fecha, isToday, turnos, notas, onToggle, onSetHor
   const [panel, setPanel] = useState<OpenPanel>(null)
   const ref = useRef<HTMLDivElement>(null)
 
+  const [fy, fm, fd] = fecha.split('-').map(Number)
+  const dowLabel = DIAS_SEMANA[(new Date(fy, fm - 1, fd).getDay() + 6) % 7]
+
   useEffect(() => {
     if (!panel) return
     const activePanel = panel
@@ -105,7 +108,7 @@ export function DayCell({ day, fecha, isToday, turnos, notas, onToggle, onSetHor
         <span className={`text-xs font-semibold text-center ${
           isToday ? 'text-blue-500' : 'text-gray-400'
         }`}>
-          {DIAS_SEMANA[(new Date(...(fecha.split('-').map(Number)) as unknown as [number, number, number]).getDay() + 6) % 7]}
+          {dowLabel}
         </span>
         <span className={`text-xs font-bold text-right ${
           isToday ? 'text-blue-600' : 'text-gray-400'
