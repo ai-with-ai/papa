@@ -130,7 +130,7 @@ export function DayCell({ day, fecha, isToday, turnos, notas, onToggle, onSetHor
                   }`}
                 >
                   <span className="text-sm leading-none shrink-0">{BLOQUE_ICON[bloque]}</span>
-                  <div className="flex gap-0.5 flex-wrap">
+                  <div className="flex flex-col gap-0.5">
                     {personas.length === 0 ? (
                       <span className="text-xs text-gray-300 leading-none">—</span>
                     ) : (
