@@ -141,17 +141,17 @@ export function Calendar({ year, month, turnos, notas, loading, onPrev, onNext, 
           <div className="flex gap-4 justify-center mt-1.5">
             <div className="flex items-center gap-1 text-xs text-gray-400">
               <span>🌅</span>
-              <span>Mañana</span>
+              <span className="hidden sm:inline">Mañana</span>
               <span className="font-medium text-gray-500">9:00–15:00</span>
             </div>
             <div className="flex items-center gap-1 text-xs text-gray-400">
               <span>☀️</span>
-              <span>Tarde</span>
+              <span className="hidden sm:inline">Tarde</span>
               <span className="font-medium text-gray-500">15:00–21:00</span>
             </div>
             <div className="flex items-center gap-1 text-xs text-gray-400">
               <span>🌙</span>
-              <span>Noche</span>
+              <span className="hidden sm:inline">Noche</span>
               <span className="font-medium text-gray-500">21:00–+</span>
             </div>
           </div>
