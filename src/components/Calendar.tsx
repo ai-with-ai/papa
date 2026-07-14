@@ -17,10 +17,10 @@ interface Props {
 }
 
 const PERSONAS_LEGEND = [
-  { label: 'Mamá',   color: 'bg-rose-400',    initial: 'Má' },
-  { label: 'Marina', color: 'bg-blue-400',    initial: 'Mr' },
-  { label: 'Isa',    color: 'bg-emerald-400', initial: 'Is' },
-  { label: 'Carlos', color: 'bg-amber-400',   initial: 'Ca' },
+  { label: 'Mamá',   color: 'bg-rose-400',    initial: 'MAM' },
+  { label: 'Marina', color: 'bg-blue-400',    initial: 'MAR' },
+  { label: 'Isa',    color: 'bg-emerald-400', initial: 'ISA' },
+  { label: 'Carlos', color: 'bg-amber-400',   initial: 'CAR' },
 ]
 
 export function Calendar({ year, month, turnos, notas, loading, onPrev, onNext, onToggle, onSaveNota }: Props) {

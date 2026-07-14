@@ -19,10 +19,10 @@ export const PERSONA_LABEL: Record<Persona, string> = {
 }
 
 export const PERSONA_INITIAL: Record<Persona, string> = {
-  mama: 'Má',
-  marina: 'Mr',
-  isa: 'Is',
-  carlos: 'Ca',
+  mama: 'MAM',
+  marina: 'MAR',
+  isa: 'ISA',
+  carlos: 'CAR',
 }
 
 export const PERSONA_COLOR: Record<Persona, string> = {
