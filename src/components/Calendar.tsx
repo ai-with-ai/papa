@@ -1,8 +1,8 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useState } from 'react'
 import { DayCell } from './DayCell'
 import { NotasPanel } from './NotasPanel'
 import { useSeenNotas } from '../hooks/useSeenNotas'
-import { DIAS_SEMANA, MESES, type Turno, type Nota, type Bloque, type Persona } from '../types'
+import { MESES, type Turno, type Nota, type Bloque, type Persona } from '../types'
 
 interface Props {
   year: number
@@ -26,27 +26,12 @@ const PERSONAS_LEGEND = [
 
 export function Calendar({ year, month, turnos, notas, loading, onPrev, onNext, onToggle, onSetHora, onSaveNota }: Props) {
   const headerRef  = useRef<HTMLDivElement>(null)
-  const daysRef    = useRef<HTMLDivElement>(null)
-  const bodyRef    = useRef<HTMLDivElement>(null)
-  const [headerH, setHeaderH] = useState(0)
   const [panelOpen, setPanelOpen] = useState(false)
   const { hasUnread, markAllSeen } = useSeenNotas(notas)
 
   const openPanel = () => {
     setPanelOpen(true)
     markAllSeen()
-  }
-
-  // Mide la altura del header principal para posicionar la fila de días
-  useEffect(() => {
-    if (headerRef.current) setHeaderH(headerRef.current.offsetHeight)
-  }, [])
-
-  // Sincroniza el scroll horizontal de la fila de días con el grid
-  const syncScroll = () => {
-    if (daysRef.current && bodyRef.current) {
-      daysRef.current.scrollLeft = bodyRef.current.scrollLeft
-    }
   }
 
   // Cálculos del calendario
@@ -160,28 +145,9 @@ export function Calendar({ year, month, turnos, notas, loading, onPrev, onNext, 
         </div>
       </div>
 
-      {/* ── Fila de días de la semana (sticky, se mueve con scroll horizontal) ── */}
-      <div
-        ref={daysRef}
-        className="sticky z-20 bg-gray-50 border-b border-gray-100 overflow-x-hidden"
-        style={{ top: headerH }}
-      >
-        <div className="min-w-[1144px] px-4">
-          <div className="grid grid-cols-[repeat(7,160px)] gap-1 py-1.5">
-            {DIAS_SEMANA.map(d => (
-              <div key={d} className="text-center text-xs font-medium text-gray-400">
-                {d}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* ── Grid del calendario (scroll horizontal) ── */}
       <div
-        ref={bodyRef}
         className="overflow-x-auto px-4 py-2 pb-10"
-        onScroll={syncScroll}
       >
         <div className="min-w-[1144px]">
           <div className="grid grid-cols-[repeat(7,160px)] gap-1">
