@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import {
-  BLOQUES, PERSONAS,
+  BLOQUES, PERSONAS, DIAS_SEMANA,
   PERSONA_LABEL, PERSONA_INITIAL, PERSONA_COLOR, PERSONA_COLOR_MUTED,
   BLOQUE_ICON, BLOQUE_LABEL, BLOQUE_HORA,
   type Turno, type Nota, type Bloque, type Persona,
@@ -99,11 +99,19 @@ export function DayCell({ day, fecha, isToday, turnos, notas, onToggle, onSetHor
             : 'border-gray-200 bg-white hover:border-gray-300'
       }`}
     >
-      {/* Número del día */}
-      <div className={`text-xs font-bold text-right mb-1 ${
-        isToday ? 'text-blue-600' : 'text-gray-400'
-      }`}>
-        {day}
+      {/* Cabecera: abreviatura centrada + número a la derecha */}
+      <div className="grid grid-cols-3 items-center mb-1">
+        <span />
+        <span className={`text-xs font-semibold text-center ${
+          isToday ? 'text-blue-500' : 'text-gray-400'
+        }`}>
+          {DIAS_SEMANA[(new Date(...(fecha.split('-').map(Number)) as unknown as [number, number, number]).getDay() + 6) % 7]}
+        </span>
+        <span className={`text-xs font-bold text-right ${
+          isToday ? 'text-blue-600' : 'text-gray-400'
+        }`}>
+          {day}
+        </span>
       </div>
 
       {/* Bloques */}
