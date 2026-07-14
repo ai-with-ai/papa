@@ -138,12 +138,16 @@ export function DayCell({ day, fecha, isToday, turnos, notas, onToggle, onSetHor
                         const hora = horaOf(bloque, p)
                         const custom = hora !== BLOQUE_HORA[bloque]
                         return (
-                          <span
-                            key={p}
-                            className={`text-xs leading-none px-1.5 py-0.5 rounded-full font-medium ${PERSONA_COLOR[p]}`}
-                          >
-                            {PERSONA_INITIAL[p]}{custom ? ` ${hora}h` : ''}
-                          </span>
+                          <div key={p} className="flex items-center gap-1 w-full">
+                            <span className={`text-xs leading-none px-1.5 py-0.5 rounded-full font-medium ${PERSONA_COLOR[p]}`}>
+                              {PERSONA_INITIAL[p]}
+                            </span>
+                            {custom && (
+                              <span className="ml-auto text-xs font-medium bg-white text-black px-1.5 py-0.5 rounded-full leading-none">
+                                {hora}h
+                              </span>
+                            )}
+                          </div>
                         )
                       })
                     )}
