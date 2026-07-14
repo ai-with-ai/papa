@@ -42,17 +42,18 @@ export function DayCell({ day, fecha, isToday, turnos, notas, onToggle, onSaveNo
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    function onMouseDown(e: MouseEvent) {
+    if (!panel) return
+    function onDocClick(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
-        // Guardar nota si estaba abierta al hacer clic fuera
-        if (panel?.kind === 'nota') {
+        if (panel.kind === 'nota') {
           onSaveNota(fecha, panel.bloque, panel.draft)
         }
         setPanel(null)
+        e.stopPropagation()
       }
     }
-    document.addEventListener('mousedown', onMouseDown)
-    return () => document.removeEventListener('mousedown', onMouseDown)
+    document.addEventListener('click', onDocClick, true)
+    return () => document.removeEventListener('click', onDocClick, true)
   }, [panel, fecha, onSaveNota])
 
   const personasOf = (bloque: Bloque): Persona[] =>
