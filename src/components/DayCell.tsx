@@ -43,10 +43,11 @@ export function DayCell({ day, fecha, isToday, turnos, notas, onToggle, onSaveNo
 
   useEffect(() => {
     if (!panel) return
+    const activePanel = panel
     function onDocClick(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
-        if (panel.kind === 'nota') {
-          onSaveNota(fecha, panel.bloque, panel.draft)
+        if (activePanel.kind === 'nota') {
+          onSaveNota(fecha, activePanel.bloque, activePanel.draft)
         }
         setPanel(null)
         e.stopPropagation()
