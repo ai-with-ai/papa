@@ -83,7 +83,7 @@ export function DayCell({ day, fecha, isToday, turnos, notas, onToggle, onSaveNo
   return (
     <div
       ref={ref}
-      className={`relative rounded-lg border p-2 min-h-[120px] transition-colors ${
+      className={`relative rounded-lg border p-2 min-h-[120px] min-w-[128px] transition-colors ${
         isToday
           ? 'border-blue-400 bg-blue-50'
           : diaCubierto
