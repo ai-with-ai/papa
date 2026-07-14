@@ -13,6 +13,7 @@ interface Props {
   onPrev: () => void
   onNext: () => void
   onToggle: (fecha: string, bloque: Bloque, persona: Persona) => void
+  onSetHora: (fecha: string, bloque: Bloque, persona: Persona, hora: number) => void
   onSaveNota: (fecha: string, bloque: Bloque, texto: string) => void
 }
 
@@ -23,7 +24,7 @@ const PERSONAS_LEGEND = [
   { label: 'Carlos', color: 'bg-amber-400',   initial: 'CAR' },
 ]
 
-export function Calendar({ year, month, turnos, notas, loading, onPrev, onNext, onToggle, onSaveNota }: Props) {
+export function Calendar({ year, month, turnos, notas, loading, onPrev, onNext, onToggle, onSetHora, onSaveNota }: Props) {
   const headerRef  = useRef<HTMLDivElement>(null)
   const daysRef    = useRef<HTMLDivElement>(null)
   const bodyRef    = useRef<HTMLDivElement>(null)
@@ -196,6 +197,7 @@ export function Calendar({ year, month, turnos, notas, loading, onPrev, onNext, 
                   turnos={turnosForDay(day)}
                   notas={notasForDay(day)}
                   onToggle={onToggle}
+                  onSetHora={onSetHora}
                   onSaveNota={onSaveNota}
                 />
               ),

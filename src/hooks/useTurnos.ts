@@ -60,5 +60,24 @@ export function useTurnos(year: number, month: number) {
     }
   }
 
-  return { turnos, loading, error, toggle }
+  const setHora = async (fecha: string, bloque: Bloque, persona: Persona, hora: number) => {
+    const clamped = Math.max(0, Math.min(23, hora))
+    setTurnos(prev => prev.map(t =>
+      t.fecha === fecha && t.bloque === bloque && t.persona === persona
+        ? { ...t, hora: clamped }
+        : t,
+    ))
+    const { error: err } = await supabase
+      .from('turnos')
+      .update({ hora: clamped })
+      .eq('fecha', fecha)
+      .eq('bloque', bloque)
+      .eq('persona', persona)
+    if (err) {
+      setError('No se pudo actualizar la hora')
+      console.error(err)
+    }
+  }
+
+  return { turnos, loading, error, toggle, setHora }
 }

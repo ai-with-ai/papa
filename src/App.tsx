@@ -7,7 +7,7 @@ export default function App() {
   const today = new Date()
   const [year, setYear] = useState(today.getFullYear())
   const [month, setMonth] = useState(today.getMonth() + 1)
-  const { turnos, loading, error, toggle } = useTurnos(year, month)
+  const { turnos, loading, error, toggle, setHora } = useTurnos(year, month)
   const { notas, saveNota } = useNotas(year, month)
 
   const goToPrev = () => {
@@ -36,6 +36,7 @@ export default function App() {
         onPrev={goToPrev}
         onNext={goToNext}
         onToggle={toggle}
+        onSetHora={setHora}
         onSaveNota={saveNota}
       />
     </>

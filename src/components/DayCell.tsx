@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import {
   BLOQUES, PERSONAS,
   PERSONA_LABEL, PERSONA_INITIAL, PERSONA_COLOR, PERSONA_COLOR_MUTED,
-  BLOQUE_ICON, BLOQUE_LABEL,
+  BLOQUE_ICON, BLOQUE_LABEL, BLOQUE_HORA,
   type Turno, type Nota, type Bloque, type Persona,
 } from '../types'
 
@@ -13,6 +13,7 @@ interface Props {
   turnos: Turno[]
   notas: Nota[]
   onToggle: (fecha: string, bloque: Bloque, persona: Persona) => void
+  onSetHora: (fecha: string, bloque: Bloque, persona: Persona, hora: number) => void
   onSaveNota: (fecha: string, bloque: Bloque, texto: string) => void
 }
 
@@ -37,7 +38,7 @@ function NotaIcon({ hasNota }: { hasNota: boolean }) {
   )
 }
 
-export function DayCell({ day, fecha, isToday, turnos, notas, onToggle, onSaveNota }: Props) {
+export function DayCell({ day, fecha, isToday, turnos, notas, onToggle, onSetHora, onSaveNota }: Props) {
   const [panel, setPanel] = useState<OpenPanel>(null)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -62,6 +63,11 @@ export function DayCell({ day, fecha, isToday, turnos, notas, onToggle, onSaveNo
 
   const isAssigned = (bloque: Bloque, persona: Persona) =>
     turnos.some(t => t.bloque === bloque && t.persona === persona)
+
+  const horaOf = (bloque: Bloque, persona: Persona): number => {
+    const t = turnos.find(t => t.bloque === bloque && t.persona === persona)
+    return t?.hora ?? BLOQUE_HORA[bloque]
+  }
 
   const notaOf = (bloque: Bloque) =>
     notas.find(n => n.bloque === bloque)?.nota ?? ''
@@ -152,23 +158,44 @@ export function DayCell({ day, fecha, isToday, turnos, notas, onToggle, onSaveNo
 
               {/* Popover personas */}
               {isPersonasOpen && (
-                <div className="absolute left-0 z-50 mt-0.5 w-36 bg-white border border-gray-200 rounded-xl shadow-lg p-2">
+                <div className="absolute left-0 z-50 mt-0.5 w-52 bg-white border border-gray-200 rounded-xl shadow-lg p-2">
                   <p className="text-[11px] font-semibold text-gray-500 mb-1.5">
                     {BLOQUE_ICON[bloque]} {BLOQUE_LABEL[bloque]}
                   </p>
                   <div className="flex flex-col gap-1">
                     {PERSONAS.map(persona => {
                       const assigned = isAssigned(bloque, persona)
+                      const hora = horaOf(bloque, persona)
                       return (
-                        <button
-                          key={persona}
-                          onClick={() => onToggle(fecha, bloque, persona)}
-                          className={`text-sm rounded-lg px-3 py-2 text-left font-medium transition-colors ${
-                            assigned ? PERSONA_COLOR[persona] : PERSONA_COLOR_MUTED[persona]
-                          }`}
-                        >
-                          {assigned ? '✓ ' : ''}{PERSONA_LABEL[persona]}
-                        </button>
+                        <div key={persona} className="flex items-center gap-1">
+                          <button
+                            onClick={() => onToggle(fecha, bloque, persona)}
+                            className={`flex-1 text-sm rounded-lg px-2 py-1.5 text-left font-medium transition-colors ${
+                              assigned ? PERSONA_COLOR[persona] : PERSONA_COLOR_MUTED[persona]
+                            }`}
+                          >
+                            {assigned ? '✓ ' : ''}{PERSONA_LABEL[persona]}
+                          </button>
+                          {assigned && (
+                            <div className="flex items-center shrink-0">
+                              <button
+                                onClick={() => onSetHora(fecha, bloque, persona, hora - 1)}
+                                className="w-6 h-6 flex items-center justify-center rounded hover:bg-gray-100 text-gray-500 text-sm leading-none"
+                              >
+                                −
+                              </button>
+                              <span className="text-xs font-medium w-7 text-center text-gray-700">
+                                {hora}h
+                              </span>
+                              <button
+                                onClick={() => onSetHora(fecha, bloque, persona, hora + 1)}
+                                className="w-6 h-6 flex items-center justify-center rounded hover:bg-gray-100 text-gray-500 text-sm leading-none"
+                              >
+                                +
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       )
                     })}
                   </div>

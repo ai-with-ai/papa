@@ -6,7 +6,10 @@ export interface Turno {
   fecha: string
   bloque: Bloque
   persona: Persona
+  hora?: number
 }
+
+export const BLOQUE_HORA: Record<Bloque, number> = { mañana: 9, tarde: 15, noche: 21 }
 
 export const BLOQUES: Bloque[] = ['mañana', 'tarde', 'noche']
 export const PERSONAS: Persona[] = ['mama', 'marina', 'isa', 'carlos']
