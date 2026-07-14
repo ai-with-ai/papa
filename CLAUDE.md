@@ -5,12 +5,14 @@
 Calendario familiar para organizar turnos de cuidado. Cada día se divide en 3 bloques horarios (mañana, tarde, noche) y en cada bloque se puede asignar hasta 4 personas.
 
 **Personas:** mamá, Marina, Isa, Carlos (exactamente estas 4, no hay más).  
-**Audiencia:** uso interno, 4-5 usuarios, sin registro ni autenticación compleja.
+**Audiencia:** uso interno, 4-5 usuarios, sin registro ni autenticación compleja.  
+**Desplegado en Vercel** — push a `master` despliega automáticamente.
 
 ## Dominio
 
 - **Bloque** = uno de los tres turnos del día: `mañana | tarde | noche`
 - **Turno** = asignación de una persona a un bloque en una fecha concreta
+- **Nota** = texto libre asociado a un bloque en una fecha concreta
 - Un bloque puede tener entre 0 y 4 personas asignadas (las 4 simultáneamente si hace falta)
 - No hay jerarquía entre personas; todas tienen los mismos permisos
 
@@ -34,17 +36,22 @@ npm run preview  # previsualizar el build
 
 ```
 src/
-  App.tsx              # componente raíz
+  App.tsx              # componente raíz; orquesta useTurnos + useNotas
   main.tsx             # punto de entrada
   types.ts             # tipos y constantes del dominio
   assets/              # imágenes y SVGs estáticos
   components/
-    Calendar.tsx       # grid mensual + navegación
-    DayCell.tsx        # celda de día con popover por bloque
+    Calendar.tsx       # grid mensual + navegación + header con icono de notas global
+    DayCell.tsx        # celda de día: bloques, popovers de personas y notas por bloque
+    NotasPanel.tsx     # bottom sheet con todas las notas del mes
   hooks/
-    useTurnos.ts       # fetch + toggle optimista contra Supabase
+    useTurnos.ts       # fetch por mes + toggle optimista con rollback contra Supabase
+    useNotas.ts        # fetch por mes + upsert/delete contra Supabase
+    useSeenNotas.ts    # rastrea notas vistas en localStorage (punto rojo de no leído)
   lib/
     supabase.ts        # cliente Supabase
+public/
+  favicon.svg          # cruz roja sobre fondo blanco
 ```
 
 ## Convenciones
@@ -63,24 +70,49 @@ Flags activos en `tsconfig.app.json`:
 
 ## Persistencia
 
-**Supabase** (free tier) — PostgreSQL gestionado, sin servidor propio, SDK JS incluido.
+**Supabase** (free tier) — PostgreSQL gestionado, sin servidor propio, SDK JS incluido.  
+RLS desactivado en ambas tablas (`ALTER TABLE … DISABLE ROW LEVEL SECURITY`).
 
 ### Modelo de datos
 
-Una única tabla `turnos`:
+Tabla `turnos`:
 
-| columna   | tipo                              | notas                        |
-|-----------|-----------------------------------|------------------------------|
-| `id`      | uuid (PK, auto)                   |                              |
-| `fecha`   | date                              | formato `YYYY-MM-DD`         |
-| `bloque`  | text — `mañana \| tarde \| noche` |                              |
-| `persona` | text — `mama \| marina \| isa \| carlos` |                   |
+| columna   | tipo                                     | notas                |
+|-----------|------------------------------------------|----------------------|
+| `id`      | uuid (PK, auto)                          |                      |
+| `fecha`   | date                                     | formato `YYYY-MM-DD` |
+| `bloque`  | text — `mañana \| tarde \| noche`        |                      |
+| `persona` | text — `mama \| marina \| isa \| carlos` |                      |
 
-Restricción `UNIQUE (fecha, bloque, persona)` — una persona no puede estar dos veces en el mismo bloque del mismo día.
+Restricción `UNIQUE (fecha, bloque, persona)`.
 
-Cada fila = una persona asignada a un bloque en una fecha. Para saber quién trabaja el martes por la tarde: `SELECT persona FROM turnos WHERE fecha = '2026-07-14' AND bloque = 'tarde'`.
+Tabla `notas`:
 
-## Lo que aún no está decidido
+| columna  | tipo                              | notas                |
+|----------|-----------------------------------|----------------------|
+| `id`     | uuid (PK, auto)                   |                      |
+| `fecha`  | date                              | formato `YYYY-MM-DD` |
+| `bloque` | text — `mañana \| tarde \| noche` |                      |
+| `nota`   | text                              |                      |
 
-- Routing (probablemente no hace falta router; todo cabe en una sola vista de calendario)
-- Estado global: Context de React es suficiente para este tamaño; no añadir Zustand salvo que haya problema real
+Restricción `UNIQUE (fecha, bloque)` — máximo una nota por bloque por día.
+
+### Lógica de guardado de notas
+
+- Si el texto es vacío → `DELETE` la fila existente (si la hay)
+- Si ya existe fila para esa fecha+bloque → `UPDATE`
+- Si no existe → `INSERT`
+
+## UI — comportamiento destacado
+
+- **Scroll horizontal** en el grid; el header de días de la semana se sincroniza con JS (`scrollLeft`) porque `position: sticky` no funciona dentro de `overflow-x: auto`
+- **Colores de cobertura**: bloque cubierto → `bg-green-200`; día entero cubierto → `border-green-200 bg-green-100`; hoy → `border-blue-400 bg-blue-50`
+- **Icono de nota por bloque**: gris sin nota, `text-yellow-400` con nota
+- **Panel global de notas**: icono de bloc en el header abre un bottom sheet con todas las notas del mes ordenadas por fecha y bloque; punto rojo en el icono si hay notas no vistas (estado en `localStorage`)
+- **Toggle optimista**: los turnos se aplican en UI antes de confirmar con Supabase; se hace rollback si falla
+
+## Decisiones tomadas
+
+- Sin router — todo cabe en una sola vista de calendario
+- Sin estado global (Zustand, Context) — props drilling directo; el tamaño lo permite
+- `useSeenNotas` usa `localStorage` (no DB) para no añadir columnas ni timestamps a `notas`
