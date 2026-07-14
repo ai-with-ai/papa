@@ -166,7 +166,7 @@ export function Calendar({ year, month, turnos, notas, loading, onPrev, onNext, 
         className="sticky z-20 bg-gray-50 border-b border-gray-100 overflow-x-hidden"
         style={{ top: headerH }}
       >
-        <div className="min-w-[896px] px-4">
+        <div className="min-w-[980px] px-4">
           <div className="grid grid-cols-7 gap-1 py-1.5">
             {DIAS_SEMANA.map(d => (
               <div key={d} className="text-center text-xs font-medium text-gray-400">
@@ -183,7 +183,7 @@ export function Calendar({ year, month, turnos, notas, loading, onPrev, onNext, 
         className="overflow-x-auto px-4 py-2 pb-10"
         onScroll={syncScroll}
       >
-        <div className="min-w-[896px]">
+        <div className="min-w-[980px]">
           <div className="grid grid-cols-7 gap-1">
             {cells.map((day, i) =>
               day == null ? (
